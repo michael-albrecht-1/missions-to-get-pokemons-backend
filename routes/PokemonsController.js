@@ -12,12 +12,17 @@ router.get("/", (req, res) => {
 
 router.post("/", (req, res) => {
   const newRecord = new PokemonsModel({
-    number: Math.round(Math.random() * 10000),
+    number: req.body.number,
     name: req.body.name,
     description: req.body.description,
     weight: req.body.weight,
     height: req.body.height,
     avatar: req.body.avatar,
+  });
+
+  newRecord.save((err, docs) => {
+    if (!err) res.send(docs);
+    else console.error("add pokemon failed" + err);
   });
 });
 
