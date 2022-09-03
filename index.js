@@ -1,11 +1,17 @@
-const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();
-require("./models/dbconfig");
-const pokemonsRoutes = require("./routes/PokemonsController");
-const bodyPaser = require("body-parser");
+require("./models/dbConfig");
+const pokemonsRoutes = require("./routes/pokemonsController");
+const missionsRoutes = require("./routes/missionsController");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const cors = require("cors");
+
+//mongoose.set("useFindAndModify", false);
 
 app.use(bodyParser.json());
+app.use(cors());
 app.use("/pokemons", pokemonsRoutes);
+app.use("/missions", missionsRoutes);
 
-app.listen(5500, () => console.log("Server started port 5500"));
+app.listen(5500, () => console.log("Server started: 5500"));
