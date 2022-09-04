@@ -12,7 +12,10 @@ router.post("/", (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.error("add mission failed" + err);
+    else {
+      console.error("add mission failed : " + err);
+      res.status(400).send(err);
+    }
   });
 });
 
