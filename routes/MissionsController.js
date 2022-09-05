@@ -7,7 +7,7 @@ router.post("/", (req, res) => {
     uuid: req.body.uuid,
     title: req.body.title,
     description: req.body.description,
-    rewards: JSON.stringify(req.body.rewards),
+    reward: req.body.reward,
   });
 
   newRecord.save((err, docs) => {
