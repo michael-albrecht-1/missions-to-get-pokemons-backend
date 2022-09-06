@@ -8,6 +8,7 @@ router.post("/", (req, res) => {
     title: req.body.title,
     description: req.body.description,
     rewards: JSON.stringify(req.body.rewards),
+    status: "created",
   });
 
   newRecord.save((err, docs) => {
@@ -16,6 +17,13 @@ router.post("/", (req, res) => {
       console.error("add mission failed : " + err);
       res.status(400).send(err);
     }
+  });
+});
+
+router.get("/", (req, res) => {
+  MissionsModel.find((err, docs) => {
+    if (!err) res.send(docs);
+    else console.error("error to get missions");
   });
 });
 

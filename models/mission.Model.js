@@ -5,6 +5,11 @@ const MissionsModel = mongoose.model("missions", {
   title: { type: String, required: true },
   description: { type: String, required: false },
   rewards: { type: String, required: false },
+  status: {
+    type: String,
+    enum: ["created", "done", "expired"],
+    required: true,
+  },
 });
 
 module.exports = { MissionsModel };
