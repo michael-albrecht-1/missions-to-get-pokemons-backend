@@ -7,11 +7,11 @@ router.post("/", (req, res) => {
     uuid: req.body.uuid,
     title: req.body.title,
     description: req.body.description,
-    reward: req.body.reward,
+    rewards: JSON.stringify(req.body.rewards),
   });
 
   newRecord.save((err, docs) => {
-    if (!err) res.send(docs);
+    if (!err) res.json(docs);
     else {
       console.error("add mission failed : " + err);
       res.status(400).send(err);
