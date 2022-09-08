@@ -17,7 +17,7 @@ router.post("/", (req, res) => {
 
 router.get("/", (req, res) => {
   CaughtPokemonsModel.find((err, docs) => {
-    if (!err) res.send(docs);
+    if (!err) res.json(docs);
     else console.error("error to get caught pokemons");
   });
 });

@@ -22,8 +22,19 @@ router.post("/", (req, res) => {
 
 router.get("/", (req, res) => {
   MissionsModel.find((err, docs) => {
-    if (!err) res.send(docs);
-    else console.error("error to get missions");
+    console.warn(docs);
+    if (!err) {
+      res.json(
+        docs.map((doc) => ({
+          uuid: doc.uuid,
+          title: doc.title,
+          description: doc.description,
+          rewards: JSON.parse(doc.rewards),
+          status: doc.status,
+          dateCreation: doc.dateCreation,
+        }))
+      );
+    } else console.error("error to get missions");
   });
 });
 
