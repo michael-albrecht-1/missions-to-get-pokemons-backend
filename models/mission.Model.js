@@ -10,6 +10,7 @@ const MissionsModel = mongoose.model("missions", {
     enum: ["created", "done", "expired"],
     required: true,
   },
+  dateCreation: { type: Date, default: Date.now },
 });
 
 module.exports = { MissionsModel };
