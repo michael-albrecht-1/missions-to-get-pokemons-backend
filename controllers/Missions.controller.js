@@ -1,8 +1,6 @@
-const express = require("express");
 const { MissionsModel } = require("../models/mission.Model");
-const router = express.Router();
 
-router.post("/", (req, res) => {
+module.exports.createMission = (req, res) => {
   const newRecord = new MissionsModel({
     uuid: req.body.uuid,
     title: req.body.title,
@@ -18,11 +16,10 @@ router.post("/", (req, res) => {
       res.status(400).send(err);
     }
   });
-});
+};
 
-router.get("/", (req, res) => {
+module.exports.searchMissions = (req, res) => {
   MissionsModel.find((err, docs) => {
-    console.warn(docs);
     if (!err) {
       res.json(
         docs.map((doc) => ({
@@ -36,6 +33,4 @@ router.get("/", (req, res) => {
       );
     } else console.error("error to get missions");
   });
-});
-
-module.exports = router;
+};

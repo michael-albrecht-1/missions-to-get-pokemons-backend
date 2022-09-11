@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
 require("./models/dbConfig");
-const caughtPokemonsRoutes = require("./routes/caughtPokemonsController");
-const missionsRoutes = require("./routes/missionsController");
+const caughtPokemonsRoutes = require("./routes/caughtPokemons.routes");
+const missionsRoutes = require("./routes/missions.routes");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
