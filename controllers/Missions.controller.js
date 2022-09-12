@@ -61,6 +61,7 @@ module.exports.completeMission = async (req, res) => {
     })
     .catch((err) => res.status(500).send({ message: err }));
 
+  console.warn(updatedMission);
   const stringRewards = updatedMission?.rewards;
   if (!stringRewards) {
     return console.error("No rewards !");
