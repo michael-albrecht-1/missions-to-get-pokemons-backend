@@ -58,26 +58,25 @@ module.exports.completeMission = async (req, res) => {
         return res.status(403).send("Mission already complete !");
       }
 
-      updatedMission = { ...data._doc, status: "done" };
-      return res.send(updatedMission);
+      updatedMission = {
+        ...data._doc,
+        rewards: JSON.parse(data._doc.rewards),
+        status: "done",
+      };
+      return res.json(updatedMission);
     })
     .catch((err) => res.status(500).send({ message: err }));
 
-  console.warn(updatedMission);
-  const stringRewards = updatedMission?.rewards;
-  if (!stringRewards) {
+  if (!updatedMission.rewards) {
     return console.error("No rewards !");
   }
-  const rewards = JSON.parse(stringRewards);
 
-  rewards.forEach(async (reward) => {
+  updatedMission.rewards.forEach(async (reward) => {
     const newRecord = new CaughtPokemonsModel({
       number: reward.number,
       name: reward.name,
     });
 
-    const caughtPokemon = await newRecord.save();
-
-    console.warn(caughtPokemon);
+    newRecord.save();
   });
 };
