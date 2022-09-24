@@ -1,14 +1,16 @@
 const mongoose = require("mongoose");
+const environment = require("./environments/environment");
 
+console.warn(environment);
 mongoose.connect(
-  "mongodb://localhost:27017/pokedex",
+  environment.source,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     autoIndex: false,
   },
   (err) => {
-    if (!err) console.log("Mongodb connected");
-    else console.log("Connection error" + err);
+    if (!err) console.log("Mongodb local connected");
+    else console.log("Connection Mongodb local error" + err);
   }
 );

@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-require("./config/dbconfig");
+require("./config/dbConfig");
 const caughtPokemonsRoutes = require("./routes/caughtPokemons.routes");
 const missionsRoutes = require("./routes/missions.routes");
 const bodyParser = require("body-parser");
