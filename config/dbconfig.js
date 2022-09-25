@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-mongoose.connect(
+const connexion = mongoose.connect(
   process.env.SOURCE_MONGO_PROD,
   {
     useNewUrlParser: true,
@@ -13,6 +13,8 @@ mongoose.connect(
     else console.log("Connection Mongodb local error" + err);
   }
 );
+
+module.exports = connexion;
 
 /*
 SOURCE_MONGO_PROD;
