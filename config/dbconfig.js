@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
-// const environment = require("./environments/environment");
-const SOURCES = require("../sources");
+require("dotenv").config();
 
 mongoose.connect(
-  process.env[SOURCES.mongoProd],
+  process.env.SOURCE_MONGO_PROD,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -14,3 +13,9 @@ mongoose.connect(
     else console.log("Connection Mongodb local error" + err);
   }
 );
+
+/*
+SOURCE_MONGO_PROD;
+SOURCE_MONGO_TEST;
+SOURCE_MONGO_LOCAL;
+*/
