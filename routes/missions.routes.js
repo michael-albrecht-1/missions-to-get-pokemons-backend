@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const missionsController = require("../controllers/missions.controller");
+const missionsController = require("../controllers/Missions.controller");
 
 router.post("/", missionsController.createMission);
 router.get("/", missionsController.searchMissions);
