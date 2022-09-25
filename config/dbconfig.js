@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-const environment = require("./environments/environment");
+// const environment = require("./environments/environment");
+const SOURCES = require("../sources");
 
-console.warn(environment);
 mongoose.connect(
-  environment.source,
+  process.env[SOURCES.mongoProd],
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
