@@ -24,6 +24,7 @@ module.exports.searchMissions = (req, res) => {
     if (!err) {
       res.json(
         docs
+          .filter((doc) => doc.status === "created")
           .map((doc) => ({
             uuid: doc.uuid,
             title: doc.title,
