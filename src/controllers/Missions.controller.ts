@@ -1,7 +1,8 @@
-const { CaughtPokemonsModel } = require("../models/caughtPokemonsModel");
-const { MissionsModel } = require("../models/mission.Model");
+import { Handler } from 'express';
+import { CaughtPokemonsModel } from "../models/caughtPokemonsModel";
+import { MissionsModel } from "../models/mission.Model";
 
-module.exports.createMission = (req, res) => {
+export const createMission: Handler = (req, res) => {
   const newRecord = new MissionsModel({
     uuid: req.body.uuid,
     title: req.body.title,
@@ -19,7 +20,7 @@ module.exports.createMission = (req, res) => {
   });
 };
 
-module.exports.searchMissions = (req, res) => {
+export const searchMissions: Handler = (req, res) => {
   MissionsModel.find((err, docs) => {
     if (!err) {
       res.json(
@@ -39,7 +40,7 @@ module.exports.searchMissions = (req, res) => {
   });
 };
 
-module.exports.completeMission = async (req, res) => {
+export const completeMission: Handler = async (req, res) => {
   let updatedMission = undefined;
   await MissionsModel.findOneAndUpdate(
     {
@@ -59,9 +60,11 @@ module.exports.completeMission = async (req, res) => {
         return res.status(403).send("Mission already complete !");
       }
 
+      const json = data.toJSON();
+
       updatedMission = {
-        ...data._doc,
-        rewards: JSON.parse(data._doc.rewards),
+        ...json,
+        rewards: JSON.parse(json.rewards),
         status: "done",
       };
       return res.json(updatedMission);
