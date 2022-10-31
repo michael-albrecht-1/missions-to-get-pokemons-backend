@@ -1,7 +1,6 @@
 {
   "version": 2,
   "name": "missions-to-get-pokemons-backend-wxop",
-  "buildCommand": "npm run tsc",
-  "builds": [{ "src": "dist/src/server.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "/dist/src/server.js" }]
+  "builds": [{ "src": "src/server.ts", "use": "@vercel/node" }],
+  "routes": [{ "src": "/(.*)", "dest": "/src/server.ts" }]
 }
