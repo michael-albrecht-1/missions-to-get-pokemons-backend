@@ -26,14 +26,16 @@ export const searchMissions: Handler = (req, res) => {
       res.json(
         docs
           .filter((doc) => doc.status === "created")
-          .map((doc) => ({
-            uuid: doc.uuid,
-            title: doc.title,
-            description: doc.description,
-            rewards: JSON.parse(doc.rewards),
-            status: doc.status,
-            dateCreation: doc.dateCreation,
-          }))
+          .map((doc) => {
+            return ({
+              uuid: doc.uuid,
+              title: doc.title,
+              description: doc.description,
+              rewards: JSON.parse(doc.rewards),
+              status: doc.status,
+              dateCreation: doc.dateCreation,
+            })
+          })
           .reverse()
       );
     } else console.error("error to get missions");
@@ -41,46 +43,44 @@ export const searchMissions: Handler = (req, res) => {
 };
 
 export const completeMission: Handler = async (req, res) => {
-  let updatedMission = undefined;
-  await MissionsModel.findOneAndUpdate(
-    {
-      uuid: req.params.id,
-    },
+  try {
+    const data = await MissionsModel.findOneAndUpdate(
+      {
+        uuid: req.params.id,
+      },
 
-    {
-      status: "done",
-    }
-  )
-    .then((data) => {
-      if (!data) {
-        return res.status(400).send("Mission not found !");
-      }
-
-      if (data.status === "done") {
-        return res.status(403).send("Mission already complete !");
-      }
-
-      const json = data.toJSON();
-
-      updatedMission = {
-        ...json,
-        rewards: JSON.parse(json.rewards),
+      {
         status: "done",
-      };
-      return res.json(updatedMission);
-    })
-    .catch((err) => res.status(500).send({ message: err }));
+      }
+    )
+    if (!data) {
+      return res.status(400).send("Mission not found !");
+    }
 
-  if (!updatedMission.rewards) {
-    return console.error("No rewards !");
-  }
+    if (data.status === "done") {
+      return res.status(403).send("Mission already complete !");
+    }
 
-  updatedMission.rewards.forEach(async (reward) => {
-    const newRecord = new CaughtPokemonsModel({
-      number: reward.number,
-      name: reward.name,
+    const json = data.toJSON();
+
+    const updatedMission = {
+      ...json,
+      rewards: JSON.parse(json.rewards),
+      status: "done",
+    };
+
+    /* TODO: Type */
+    updatedMission.rewards.forEach(async (reward: any) => {
+      const newRecord = new CaughtPokemonsModel({
+        number: reward.number,
+        name: reward.name,
+      });
+
+      newRecord.save();
     });
 
-    newRecord.save();
-  });
+    res.json(updatedMission);
+  } catch (err) {
+    res.status(500).send({ message: err })
+  }
 };

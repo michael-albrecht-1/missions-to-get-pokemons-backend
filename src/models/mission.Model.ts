@@ -4,7 +4,7 @@ export const MissionsModel = model("missions", new Schema({
   uuid: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String, required: false },
-  rewards: { type: String, required: false },
+  rewards: { type: String, required: true },
   status: {
     type: String,
     enum: ["created", "done", "expired"],
