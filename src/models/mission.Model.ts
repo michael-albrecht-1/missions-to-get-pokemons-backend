@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { Schema, model } from 'mongoose';
 
-const MissionsModel = mongoose.model("missions", {
+export const MissionsModel = model("missions", new Schema({
   uuid: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String, required: false },
@@ -11,6 +11,4 @@ const MissionsModel = mongoose.model("missions", {
     required: true,
   },
   dateCreation: { type: Date, default: Date.now },
-});
-
-module.exports = { MissionsModel };
+}));

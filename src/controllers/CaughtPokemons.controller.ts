@@ -1,6 +1,7 @@
-const { CaughtPokemonsModel } = require("../models/caughtPokemonsModel");
+import { Handler } from 'express';
+import { CaughtPokemonsModel } from '../models/caughtPokemonsModel';
 
-module.exports.addCaughtPokemon = (req, res) => {
+export const addCaughtPokemon: Handler = (req, res) => {
   const newRecord = new CaughtPokemonsModel({
     number: req.body.number,
     name: req.body.name,
@@ -12,7 +13,7 @@ module.exports.addCaughtPokemon = (req, res) => {
   });
 };
 
-module.exports.searchCaughtPokemons = (req, res) => {
+export const searchCaughtPokemons: Handler = (_, res) => {
   CaughtPokemonsModel.find((err, docs) => {
     if (!err) res.json(docs);
     else console.error("error to get caught pokemons");
