@@ -1,6 +1,6 @@
 import { Handler } from 'express';
-import { CaughtPokemonsModel } from "../models/caughtPokemonsModel";
-import { MissionsModel } from "../models/mission.Model";
+import { CaughtPokemonsModel } from '../models/caughtPokemonsModel';
+import { MissionsModel } from '../models/mission.Model';
 
 export const createMission: Handler = (req, res) => {
   const newRecord = new MissionsModel({
@@ -8,13 +8,13 @@ export const createMission: Handler = (req, res) => {
     title: req.body.title,
     description: req.body.description,
     rewards: JSON.stringify(req.body.rewards),
-    status: "created",
+    status: 'created',
   });
 
   newRecord.save((err, docs) => {
     if (!err) res.json(docs);
     else {
-      console.error("add mission failed : " + err);
+      console.error('add mission failed : ' + err);
       res.status(400).send(err);
     }
   });
@@ -25,20 +25,20 @@ export const searchMissions: Handler = (req, res) => {
     if (!err) {
       res.json(
         docs
-          .filter((doc) => doc.status === "created")
+          .filter((doc) => doc.status === 'created')
           .map((doc) => {
-            return ({
+            return {
               uuid: doc.uuid,
               title: doc.title,
               description: doc.description,
               rewards: JSON.parse(doc.rewards),
               status: doc.status,
               dateCreation: doc.dateCreation,
-            })
+            };
           })
           .reverse()
       );
-    } else console.error("error to get missions");
+    } else console.error('error to get missions');
   });
 };
 
@@ -50,15 +50,15 @@ export const completeMission: Handler = async (req, res) => {
       },
 
       {
-        status: "done",
+        status: 'done',
       }
-    )
+    );
     if (!data) {
-      return res.status(400).send("Mission not found !");
+      return res.status(400).send('Mission not found !');
     }
 
-    if (data.status === "done") {
-      return res.status(403).send("Mission already complete !");
+    if (data.status === 'done') {
+      return res.status(403).send('Mission already complete !');
     }
 
     const json = data.toJSON();
@@ -66,7 +66,7 @@ export const completeMission: Handler = async (req, res) => {
     const updatedMission = {
       ...json,
       rewards: JSON.parse(json.rewards),
-      status: "done",
+      status: 'done',
     };
 
     /* TODO: Type */
@@ -81,6 +81,6 @@ export const completeMission: Handler = async (req, res) => {
 
     res.json(updatedMission);
   } catch (err) {
-    res.status(500).send({ message: err })
+    res.status(500).send({ message: err });
   }
 };

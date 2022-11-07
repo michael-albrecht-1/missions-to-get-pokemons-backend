@@ -9,13 +9,13 @@ export const addCaughtPokemon: Handler = (req, res) => {
 
   newRecord.save((err, docs) => {
     if (!err) res.send(docs);
-    else console.error("add caught pokemon failed" + err);
+    else console.error('add caught pokemon failed' + err);
   });
 };
 
 export const searchCaughtPokemons: Handler = (_, res) => {
   CaughtPokemonsModel.find((err, docs) => {
     if (!err) res.json(docs);
-    else console.error("error to get caught pokemons");
+    else console.error('error to get caught pokemons');
   });
 };
