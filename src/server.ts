@@ -4,6 +4,7 @@ import missionsRoutes from './routes/missions.routes';
 import pokemonsRoutes from './routes/pokemons.routes';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import 'isomorphic-fetch';
 
 import '../config/dbConfig';
 
