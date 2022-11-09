@@ -1,6 +1,6 @@
 import { Handler } from 'express';
-import { PokemonDTO, PokemonsModel } from '../models/pokemonModel';
-
+import { PokemonsModel } from '../models/pokemonModel';
+//! TODO drop le contenu de la collection avant d'importer la liste
 export const searchPokemons: Handler = (req, res) => {
   PokemonsModel.find((err, docs) => {
     if (!err) {
@@ -22,9 +22,9 @@ export const searchPokemons: Handler = (req, res) => {
 };
 
 export const updatePokemonsFromPokeApi: Handler = async (req, res) => {
-  const pokemons: PokemonDTO[] = await getPokemons();
+  const pokemons: PokemonPokeApiDTO[] = await getPokemons();
 
-  pokemons.map((p: PokemonDTO) => {
+  pokemons.map((p: PokemonPokeApiDTO) => {
     const newRecord = new PokemonsModel({
       id: p.id,
       name: p.name,
@@ -39,21 +39,51 @@ export const updatePokemonsFromPokeApi: Handler = async (req, res) => {
   res.status(200).send('Pokemons import sucess !');
 };
 
-const getPokemons = async (): Promise<PokemonDTO[]> => {
+const getPokemons = async (): Promise<PokemonPokeApiDTO[]> => {
   const pokemonCount = 649;
-  let pokemons: PokemonDTO[] = [];
+  let pokemons: PokemonPokeApiDTO[] = [];
   for (let i = 1; i <= pokemonCount; i++) {
-    const pokemon: PokemonDTO = await getPokemon(i);
+    const pokemon: PokemonPokeApiDTO = await getPokemon(i);
     pokemons = [...pokemons, pokemon];
   }
 
   return pokemons;
 };
 
-const getPokemon = async (num: number): Promise<PokemonDTO> => {
+const getPokemon = async (num: number): Promise<PokemonPokeApiDTO> => {
   const url = 'https://pokeapi.co/api/v2/pokemon/' + num.toString();
 
   const res = await fetch(url);
 
-  return res.json() as Promise<PokemonDTO>;
+  return res.json() as Promise<PokemonPokeApiDTO>;
 };
+
+interface PokemonPokeApiDTO {
+  id: number;
+  name: string;
+  base_experience: number;
+  height: number;
+  is_default: boolean;
+  order: number;
+  weight: number;
+  abilities: any[];
+  held_items: any[];
+  location_area_encounters: string;
+  moves: any[];
+  species: any;
+  sprites: PokemonPokeApiSpritesDTO;
+  stats: any[];
+  types: any[];
+  past_types: any[];
+}
+
+export interface PokemonPokeApiSpritesDTO {
+  front_default: string;
+  front_shiny: string;
+  front_female: string;
+  front_shiny_female: string;
+  back_default: string;
+  back_shiny: string;
+  back_female: string;
+  back_shiny_female: string;
+}
