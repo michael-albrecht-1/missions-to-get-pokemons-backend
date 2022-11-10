@@ -7,7 +7,7 @@ import {
 
 const router = Router();
 router.get('/', searchPokemons);
-router.get('/:id', getPokemon);
 router.get('/update', updatePokemonsFromPokeApi);
+router.get('/:id', getPokemon);
 
 export default router;

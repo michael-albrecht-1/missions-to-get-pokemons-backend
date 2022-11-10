@@ -1,5 +1,6 @@
 import { Handler } from 'express';
 import { PokemonsModel } from '../models/pokemonModel';
+const mongoose = require('mongoose');
 
 export const searchPokemons: Handler = (req, res) => {
   PokemonsModel.find((err, docs) => {
@@ -34,25 +35,39 @@ export const getPokemon: Handler = async (req, res) => {
 };
 
 export const updatePokemonsFromPokeApi: Handler = async (req, res) => {
-  const pokemons: PokemonPokeApiDTO[] = await getPokemonsFromPokeApi();
+  try {
+    const pokemons: PokemonPokeApiDTO[] = await getPokemonsFromPokeApi();
 
-  //! TODO drop le contenu de la collection avant d'importer la liste
-  pokemons.map((p: PokemonPokeApiDTO) => {
-    const newRecord = new PokemonsModel({
-      id: p.id,
-      name: p.name,
-      height: p.height,
-      weight: p.weight,
-      types: p.types,
+    mongoose.connection.db.dropCollection(
+      'pokemons',
+      function (err: any, res: any) {
+        if (err) {
+          console.log(err);
+          throw err;
+        }
+      }
+    );
+
+    pokemons.map((p: PokemonPokeApiDTO) => {
+      const newRecord = new PokemonsModel({
+        id: p.id,
+        name: p.name,
+        height: p.height,
+        weight: p.weight,
+        types: p.types,
+      });
+
+      newRecord.save();
     });
 
-    newRecord.save();
-  });
-
-  res.status(200).send('Pokemons import sucess !');
+    res.status(200).send('Pokemons import sucess !');
+  } catch (err) {
+    res.status(500).send({ message: 'import pokemons from pokeapi failed' });
+  }
 };
 
 const getPokemonsFromPokeApi = async (): Promise<PokemonPokeApiDTO[]> => {
+  // actual pokemons number referenced in pokeApi : 649
   const pokemonCount = 649;
   let pokemons: PokemonPokeApiDTO[] = [];
   for (let i = 1; i <= pokemonCount; i++) {
