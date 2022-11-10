@@ -1,6 +1,6 @@
 import { Handler } from 'express';
 import { PokemonsModel } from '../models/pokemonModel';
-//! TODO drop le contenu de la collection avant d'importer la liste
+
 export const searchPokemons: Handler = (req, res) => {
   PokemonsModel.find((err, docs) => {
     if (!err) {
@@ -21,9 +21,22 @@ export const searchPokemons: Handler = (req, res) => {
   });
 };
 
-export const updatePokemonsFromPokeApi: Handler = async (req, res) => {
-  const pokemons: PokemonPokeApiDTO[] = await getPokemons();
+export const getPokemon: Handler = async (req, res) => {
+  try {
+    const data = await PokemonsModel.find({
+      id: req.params.id,
+    });
 
+    res.json(data);
+  } catch (err) {
+    res.status(500).send({ message: err });
+  }
+};
+
+export const updatePokemonsFromPokeApi: Handler = async (req, res) => {
+  const pokemons: PokemonPokeApiDTO[] = await getPokemonsFromPokeApi();
+
+  //! TODO drop le contenu de la collection avant d'importer la liste
   pokemons.map((p: PokemonPokeApiDTO) => {
     const newRecord = new PokemonsModel({
       id: p.id,
@@ -39,18 +52,20 @@ export const updatePokemonsFromPokeApi: Handler = async (req, res) => {
   res.status(200).send('Pokemons import sucess !');
 };
 
-const getPokemons = async (): Promise<PokemonPokeApiDTO[]> => {
+const getPokemonsFromPokeApi = async (): Promise<PokemonPokeApiDTO[]> => {
   const pokemonCount = 649;
   let pokemons: PokemonPokeApiDTO[] = [];
   for (let i = 1; i <= pokemonCount; i++) {
-    const pokemon: PokemonPokeApiDTO = await getPokemon(i);
+    const pokemon: PokemonPokeApiDTO = await getPokemonFromPokeApi(i);
     pokemons = [...pokemons, pokemon];
   }
 
   return pokemons;
 };
 
-const getPokemon = async (num: number): Promise<PokemonPokeApiDTO> => {
+const getPokemonFromPokeApi = async (
+  num: number
+): Promise<PokemonPokeApiDTO> => {
   const url = 'https://pokeapi.co/api/v2/pokemon/' + num.toString();
 
   const res = await fetch(url);
