@@ -23,7 +23,7 @@ export const searchPokemons: Handler = (req, res) => {
 
 export const getPokemon: Handler = async (req, res) => {
   try {
-    const data = await PokemonsModel.find({
+    const data = await PokemonsModel.findOne({
       id: req.params.id,
     });
 
