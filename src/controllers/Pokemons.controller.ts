@@ -3,9 +3,41 @@ import { PokemonsModel } from '../models/pokemonModel';
 const mongoose = require('mongoose');
 
 export const searchPokemons: Handler = async (req, res) => {
-  const pokemons = await PokemonsModel.find();
+  try {
+    const page = parseInt(req.query.page) || 0;
+    const limit = parseInt(req.query.limit) || 12;
+    const result = {};
+    const nbresults = await PokemonsModel.countDocuments().exec();
 
-  res.send(pokemons);
+    let startIndex = page * limit;
+    const endIndex = (page + 1) * limit;
+    result.nbresults = nbresults;
+
+    if (startIndex > 0) {
+      result.previous = {
+        page: page - 1,
+        limit: limit,
+      };
+    }
+    if (endIndex < nbresults) {
+      result.next = {
+        pageNumber: page + 1,
+        limit: limit,
+      };
+    }
+    console.warn(result);
+
+    result.data = await PokemonsModel.find()
+      .skip(startIndex)
+      .limit(limit)
+      .exec();
+
+    result.rowsPerPage = limit;
+    return res.json({ msg: 'Posts Fetched successfully', data: result });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: 'Sorry, something went wrong' });
+  }
 };
 
 export const getPokemon: Handler = async (req, res) => {
