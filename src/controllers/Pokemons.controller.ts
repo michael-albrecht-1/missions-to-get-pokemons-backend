@@ -4,36 +4,22 @@ const mongoose = require('mongoose');
 
 export const searchPokemons: Handler = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 0;
-    const limit = parseInt(req.query.limit) || 12;
-    const result = {};
+    const page = parseInt(req.query.page as string) || 0;
+    const limit = parseInt(req.query.size as string) || 20;
+
     const nbresults = await PokemonsModel.countDocuments().exec();
 
-    let startIndex = page * limit;
-    const endIndex = (page + 1) * limit;
-    result.nbresults = nbresults;
+    const pokemons = await PokemonsModel.find({ ...req.query })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .sort({ createdAt: -1 });
 
-    if (startIndex > 0) {
-      result.previous = {
-        page: page - 1,
-        limit: limit,
-      };
-    }
-    if (endIndex < nbresults) {
-      result.next = {
-        pageNumber: page + 1,
-        limit: limit,
-      };
-    }
-    console.warn(result);
-
-    result.data = await PokemonsModel.find()
-      .skip(startIndex)
-      .limit(limit)
-      .exec();
-
-    result.rowsPerPage = limit;
-    return res.json({ msg: 'Posts Fetched successfully', data: result });
+    return res.status(200).json({
+      currentPage: page,
+      totalPages: Math.ceil(nbresults / limit),
+      nbresults,
+      pokemons,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: 'Sorry, something went wrong' });
