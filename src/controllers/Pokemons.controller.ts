@@ -4,15 +4,15 @@ const mongoose = require('mongoose');
 
 export const searchPokemons: Handler = async (req, res) => {
   try {
-    const page = parseInt(req.query.page as string) || 0;
+    const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.size as string) || 20;
 
     const nbresults = await PokemonsModel.countDocuments().exec();
 
     const pokemons = await PokemonsModel.find({ ...req.query })
       .limit(limit * 1)
-      .skip((page - 1) * limit)
-      .sort({ createdAt: -1 });
+      .skip((page - 1) * limit);
+    //.sort({ createdAt: -1 });
 
     return res.status(200).json({
       currentPage: page,
