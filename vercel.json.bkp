@@ -2,5 +2,8 @@
   "version": 2,
   "name": "missions-to-get-pokemons-backend-wxop",
   "builds": [{ "src": "src/server.ts", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "/src/server.ts" }]
+  "routes": [{ "src": "/(.*)", "dest": "/src/server.ts" }],
+  "github": {
+    "enabled": false
+  }
 }
