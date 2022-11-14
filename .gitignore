@@ -6,3 +6,6 @@
 
 # env files
 .env
+
+# Vercel files
+.vercel
