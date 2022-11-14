@@ -5,7 +5,7 @@
   "routes": [{ "src": "/(.*)", "dest": "/src/server.ts" }],
   "git": {
     "deploymentEnabled": {
-      "main": false
+      "master": false
     }
   }
 }
