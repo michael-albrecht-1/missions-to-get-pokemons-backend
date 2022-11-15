@@ -7,9 +7,12 @@ export const searchPokemons: Handler = async (req, res) => {
     const page = parseInt(req.query.page as string) || 0;
     const limit = parseInt(req.query.size as string) || 10;
 
+    const type = req.query.type;
+    const caught = req.query.caught;
+
     const nbResults = await PokemonsModel.countDocuments().exec();
 
-    const pokemons = await PokemonsModel.find({ ...req.query })
+    const pokemons = await PokemonsModel.find({ 'types.type.name': type })
       .limit(limit * 1)
       .skip(page * limit)
       .sort({ id: 1 });
