@@ -7,12 +7,26 @@ export const searchPokemons: Handler = async (req, res) => {
     const page = parseInt(req.query.page as string) || 0;
     const limit = parseInt(req.query.size as string) || 10;
 
+    const id = req.query.id;
     const type = req.query.type;
-    const caught = req.query.caught;
+    const name = req.query.name;
+
+    const findParams = [];
+    if (id) {
+      findParams.push({ id });
+    }
+    if (type) {
+      findParams.push({ 'types.type.name': type });
+    }
+    if (name) {
+      findParams.push({ name });
+    }
 
     const nbResults = await PokemonsModel.countDocuments().exec();
 
-    const pokemons = await PokemonsModel.find({ 'types.type.name': type })
+    const pokemons = await PokemonsModel.find({
+      $and: findParams,
+    })
       .limit(limit * 1)
       .skip(page * limit)
       .sort({ id: 1 });

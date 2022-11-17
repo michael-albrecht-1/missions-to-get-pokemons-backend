@@ -1,4 +1,10 @@
-import { IsInt, Length, validate, ValidatorOptions } from 'class-validator';
+import {
+  IsNumber,
+  IsOptional,
+  Length,
+  validate,
+  ValidatorOptions,
+} from 'class-validator';
 import { Handler } from 'express';
 import { Pokemon } from '../models/pokemon.model';
 
@@ -25,13 +31,16 @@ export const pokemonSearchValidator: Handler = async (req, res, next) => {
 };
 
 export class PokemonSearch implements Pick<Pokemon, 'id' | 'name'> {
-  @IsInt()
+  @IsNumber()
+  @IsOptional()
   id!: number;
 
   @Length(1, 20)
+  @IsOptional()
   name!: string;
 
   @Length(1, 20)
+  @IsOptional()
   type!: string;
 }
 
