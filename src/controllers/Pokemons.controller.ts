@@ -18,7 +18,11 @@ export const searchPokemons: Handler = async (req, res) => {
     if (id) {
       findParams.id = id;
     }
-    if (type) {
+
+    //TODO improve code bellow !
+    if (type && type !== 'null') {
+      console.warn(type);
+
       findParams['types.type.name'] = type;
     }
     if (name) {
