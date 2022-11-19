@@ -1,4 +1,5 @@
 import { Handler } from 'express';
+import { PokemonSearch } from '../middlewares/pokemonSearchValidator.middleware';
 import { PokemonsModel } from '../models/pokemonModel';
 const mongoose = require('mongoose');
 
@@ -7,26 +8,26 @@ export const searchPokemons: Handler = async (req, res) => {
     const page = parseInt(req.query.page as string) || 0;
     const limit = parseInt(req.query.size as string) || 10;
 
-    const id = req.query.id;
-    const type = req.query.type;
-    const name = req.query.name;
+    const { id, type, name } = req.query as unknown as PokemonSearch;
 
-    const findParams = [];
+    const findParams: {
+      id?: number;
+      'types.type.name'?: string;
+      name?: string;
+    } = {};
     if (id) {
-      findParams.push({ id });
+      findParams.id = id;
     }
     if (type) {
-      findParams.push({ 'types.type.name': type });
+      findParams['types.type.name'] = type;
     }
     if (name) {
-      findParams.push({ name });
+      findParams.name = name;
     }
 
     const nbResults = await PokemonsModel.countDocuments().exec();
 
-    const pokemons = await PokemonsModel.find({
-      $and: findParams,
-    })
+    const pokemons = await PokemonsModel.find(findParams)
       .limit(limit * 1)
       .skip(page * limit)
       .sort({ id: 1 });
