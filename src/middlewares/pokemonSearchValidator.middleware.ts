@@ -1,5 +1,6 @@
 import {
   IsNumber,
+  IsNumberString,
   IsOptional,
   Length,
   validate,
@@ -7,15 +8,10 @@ import {
 } from 'class-validator';
 import { Handler } from 'express';
 import { Pokemon } from '../models/pokemon.model';
+import { plainToClass } from 'class-transformer';
 
 export const pokemonSearchValidator: Handler = async (req, res, next) => {
-  const pokemonSearch = new PokemonSearch();
-
-  const { id, name, type } = req.query as unknown as PokemonSearch;
-
-  pokemonSearch.id = id;
-  pokemonSearch.name = name;
-  pokemonSearch.type = type;
+  const pokemonSearch = plainToClass(PokemonSearch, req.query);
 
   const errors = await validate(pokemonSearch, validatorOptions);
   if (errors.length) {
@@ -31,7 +27,15 @@ export const pokemonSearchValidator: Handler = async (req, res, next) => {
 };
 
 export class PokemonSearch implements Pick<Pokemon, 'id' | 'name'> {
-  @IsNumber()
+  @IsNumberString()
+  @IsOptional()
+  page!: number;
+
+  @IsNumberString()
+  @IsOptional()
+  size!: number;
+
+  @IsNumberString()
   @IsOptional()
   id!: number;
 

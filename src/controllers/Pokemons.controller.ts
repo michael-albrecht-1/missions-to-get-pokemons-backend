@@ -1,49 +1,49 @@
 import { Handler } from 'express';
 import { PokemonSearch } from '../middlewares/pokemonSearchValidator.middleware';
 import { PokemonsModel } from '../models/pokemonModel';
+import { plainToClass } from 'class-transformer';
 const mongoose = require('mongoose');
 
 export const searchPokemons: Handler = async (req, res) => {
   try {
-    const page = parseInt(req.query.page as string) || 0;
-    const limit = parseInt(req.query.size as string) || 10;
-
-    const { id, type, name } = req.query as unknown as PokemonSearch;
+    const pokemonSearch = plainToClass(PokemonSearch, req.query);
 
     const findParams: {
       id?: number;
       'types.type.name'?: string;
       name?: string;
-    } = {};
-    if (id) {
-      findParams.id = id;
+      page: number;
+      size: number;
+    } = {
+      size: pokemonSearch.size || 10,
+      page: pokemonSearch.page || 0,
+    };
+    if (pokemonSearch.id) {
+      findParams.id = pokemonSearch.id;
     }
 
     //TODO improve code bellow !
-    if (type && type !== 'null') {
-      console.warn(type);
-
-      findParams['types.type.name'] = type;
+    if (pokemonSearch.type) {
+      findParams['types.type.name'] = pokemonSearch.type;
     }
-    if (name) {
-      findParams.name = name;
+    if (pokemonSearch.name) {
+      findParams.name = pokemonSearch.name;
     }
 
     const nbResults = await PokemonsModel.countDocuments().exec();
 
     const pokemons = await PokemonsModel.find(findParams)
-      .limit(limit * 1)
-      .skip(page * limit)
+      .limit(pokemonSearch.size * 1)
+      .skip(pokemonSearch.page * pokemonSearch.size)
       .sort({ id: 1 });
 
     return res.status(200).json({
-      currentPage: page,
-      lastPage: Math.ceil(nbResults / limit) - 1,
+      currentPage: pokemonSearch.page,
+      lastPage: Math.ceil(nbResults / pokemonSearch.size) - 1,
       nbResults,
       data: pokemons,
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ msg: 'Sorry, something went wrong' });
   }
 };
